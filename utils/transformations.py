@@ -8,13 +8,16 @@ import time
 sys.path.append("../utils/")
 import metrics
 
-def getContourLine(img):
+def applySpatialFilters(img):
     img_gauss = cv2.GaussianBlur(img, (15,15),9)
     thr, img_otsu = cv2.threshold(img_gauss[:,:,0], thresh=0, maxval=1,
         type=cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     land_mask = img_otsu-1
     opening = cv2.morphologyEx(land_mask, cv2.MORPH_OPEN, (21,21))
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, (21,21))
+    return closing
+
+def getContourLine(land_mask):
     image_canny_closing = cv2.Canny(image=land_mask, threshold1=100, threshold2=200)
     contours, hierarchy = cv2.findContours(image_canny_closing, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     contour = max(contours, key = len)
@@ -35,39 +38,27 @@ def getHorizonLineCoords(img_contours, land_mask):
     x1, y1, x2, y2 = all_coordinates[np.argmin(all_cost)]
     return [x1, y1, x2, y2]
     
-def drawHorizonLine(input_folder, output_folder):
-    start_time = time.time()
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-    label_json_path = os.path.join(os.path.dirname(input_folder), "ground_truth.json")
-    try:
-        with open(label_json_path, "r") as f:
-            label = json.load(f)
-    except Exception as e:
-        label = None
-        print("Evaluation metrics cannot be calculated.")
-    img_paths = glob.glob(input_folder + "/frame*")    
-
-    loss = []
+def detectHorizon(input_path, output_dir, label = None):
+    img = cv2.imread(input_path)
+    img_out = img.copy()
+    img_name = os.path.basename(input_path)
+    output_path = os.path.join(output_dir, img_name)
     
-    for img_path in img_paths:
-        img = cv2.imread(img_path)
-        img_out = img.copy()
-        img_name = os.path.basename(img_path)
-        output_path = os.path.join(output_folder, img_name)
-        label_name = os.path.basename(os.path.dirname(img_path))
-        img_contours, land_mask = getContourLine(img)
-        horizon_line_xy = getHorizonLineCoords(img_contours, land_mask)        
-        if label:
-            true_coords = label[img_name]["left"] + label[img_name]["right"]
-            loss.append(metrics.calcEuclidianDistance(true_coords, horizon_line_xy))
-        cv2.line(img_out,(horizon_line_xy[0],horizon_line_xy[1]),(horizon_line_xy[2],horizon_line_xy[3]),(0,0,255),2)
-        cv2.imwrite(output_path, img_out)
-    time_taken = time.time() - start_time
-    print("Processing done")
-    print(f'Time Taken to process {len(img_paths)} images is {time_taken}')    
-    if label is not None:
-        metrics.printEvaluationMetrics(loss)
-
+    #apply spatial filters to make edge detection better
+    land_mask = applySpatialFilters(img)
+    #edge detection plus simplified land mask detection
+    img_contours, land_mask = getContourLine(land_mask)
+    #score and draw best fitting Hough line
+    horizon_line_xy = getHorizonLineCoords(img_contours, land_mask)        
+    
+    #save image to file
+    cv2.line(img_out,(horizon_line_xy[0],horizon_line_xy[1]),(horizon_line_xy[2],horizon_line_xy[3]),(0,0,255),2)
+    cv2.imwrite(output_path, img_out)
+    
+    #return evaluation metrics if ground truth is found
+    if label:
+        true_coords = label[img_name]["left"] + label[img_name]["right"]
+        loss = metrics.calcEuclidianDistance(true_coords, horizon_line_xy)
+        return loss 
 
 

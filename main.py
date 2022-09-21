@@ -2,8 +2,8 @@ import os
 import time
 import glob
 import json
-import transformations
-import metrics
+from utils import transformations
+from utils import metrics
 
 # ASSUMPTION: run via shell script, paths will be consistent
 input_dir = '/app/input'

@@ -6,7 +6,8 @@ import json
 import sys
 import time
 import metrics
-    
+
+
 # Return horizon contour line for input image
 def getContourLine(img):
     # Apply blurring, thresholding and morphological transformations to identify land
@@ -90,5 +91,3 @@ def detectHorizon(input_path, output_dir, label=None):
         true_coords = label[img_name]["left"] + label[img_name]["right"]
         loss = metrics.calcEuclidianDistance(true_coords, horizon_line_xy)
         return loss 
-
-

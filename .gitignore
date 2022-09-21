@@ -2,3 +2,6 @@ data/
 .ipynb_checkpoints
 .DS_Store
 __pycache__
+
+input/*.jpg
+output/*.jpg

@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 
+
 # Calculate cost per Hough line
 def houghScoring(ground_image,line, alpha = 1.0):
     # Check if ground image is land mask, if not, fix it
@@ -47,3 +48,4 @@ def calcEuclidianDistance(true_coords,pred_coords):
 def printEvaluationMetrics(loss_list):
     print("Max Euclidean Distance: ", np.max(loss_list))
     print("Mean Euclidean Distance: ", np.mean(loss_list))
+

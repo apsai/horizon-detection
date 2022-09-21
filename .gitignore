@@ -4,4 +4,5 @@ data/
 __pycache__
 
 input/*.jpg
+input/*.json
 output/*.jpg

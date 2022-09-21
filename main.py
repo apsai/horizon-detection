@@ -37,7 +37,7 @@ def main(input_dir, output_dir):
         print("Evaluation metrics cannot be calculated.")
 
     # Detect horizon line and write image to output folder
-    img_paths = glob.glob(input_dir + "/frame*")
+    img_paths = glob.glob(input_dir + "/*.jpg")
     loss = []
     for input_path in img_paths:
         loss.append(transformations.detectHorizon(input_path, output_dir, label))
@@ -47,7 +47,7 @@ def main(input_dir, output_dir):
             print("Printing evaluation metrics...")
             metrics.printEvaluationMetrics(loss)
     time_taken = time.time() - start_time
-    print(f'Time Taken to process {len(img_paths)} images is {time_taken}')
+    print(f'Time Taken to process {len(img_paths)} images is {time_taken} seconds')
 
 
 if __name__ == '__main__':

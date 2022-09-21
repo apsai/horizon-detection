@@ -3,7 +3,7 @@ This repository contains a vision based approach to detecting the horizon line i
 
 ## How to Run
 
-The only required dependancy is docker. Build the container with: 
+The only required dependency is Docker. Build the container with: 
 
 ```bash
 docker build -t zpl_hw .
@@ -17,6 +17,12 @@ To actually run the container, call:
 ./run.sh
 ```
 
+NOTE: be sure it has the correct permissions! You may need to run:
+
+```bash
+chmod 755 run.sh
+```
+
 ### Evaluation metrics
 
 Since we are comparing two 2D straight lines, Euclidean distance is used between the predicted horizon and the actual horizon in the ground truth to determine the performance. 
@@ -25,14 +31,16 @@ These were the observed performance metrics on the two sets of input images:
 
 ```
 # input_1
-Time Taken to process 150 images is 5.35 seconds
+Min Euclidean Distance:  17.75
 Max Euclidean Distance:  162.45
 Mean Euclidean Distance:  62.77
+Time Taken to process 150 images is 8.85 seconds
 
 # input_2
-Time Taken to process 150 images is 5.37 seconds
+Min Euclidean Distance:  22.05
 Max Euclidean Distance:  164.24
 Mean Euclidean Distance:  55.53
+Time Taken to process 150 images is 8.16 seconds
 ```
 
 ### Assumptions
@@ -66,10 +74,10 @@ This is a multistep process outlined below:
     - Using computational geometry, the contour line is smoothed out. As the contour becomes straighter, it approaches the true horizon, and as a bonus, fewer points are needed to describe it.
     - We now have a horizon line with some straight segments.
 1. *Horizon detection with Hough transform* -
-We are getting pretty close to that straight line horizon at this point. A popular straight line detection algorithm called Hough Line Transform is applied to the simplified contour image. By sequentially plotting the hough lines, it becomes clear that the horizon line is one of the top two hough lines.
-With the use of a scoring function (adapted from McGee 2005) a cost for each short listed hough line is calculated. The line that minimizes this cost is the horizon line. 
+We are getting pretty close to that straight line horizon at this point. A popular straight line detection algorithm called Hough Line Transform is applied to the simplified contour image. By sequentially plotting the Hough lines, it becomes clear that the horizon line is one of the top two Hough lines.
+With the use of a scoring function (adapted from McGee 2005) a cost for each short listed Hough line is calculated. The line that minimizes this cost is the horizon line. 
 
-Some parameters were finetuned to minimize the cost function of the hough lines. These parameters have been hard coded in this repository and have been labeled as such.
+Some parameters were finetuned to minimize the cost function of the Hough lines. These parameters have been hard coded in this repository and have been labeled as such.
 
 ### Visualizing the algorithm
 
@@ -106,7 +114,7 @@ Note: Ground truth in green and Prediction in blue
 ## Sources
 
 https://www.cse.unr.edu/~bebis/CVIU2019.pdf - describes multiple classical techniques and compares them against each other.
-Obstacle Detection for Small Autonomous Aircraft using sky segmentation - McGee et all - great paper! This is where I borrowed the cost function for the hough lines.
+Obstacle Detection for Small Autonomous Aircraft using sky segmentation - McGee et all - great paper! This is where I borrowed the cost function for the Hough lines.
 https://ieeexplore.ieee.org/document/5254345 - Otsu Method and K-Means
 https://ieeexplore.ieee.org/abstract/document/4041464 - Early approach
 https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html

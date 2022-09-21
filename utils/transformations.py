@@ -59,7 +59,7 @@ def getHorizonLineCoords(img_contours, land_mask):
 
 # Bring it all together
 def detectHorizon(input_path, output_dir, label=None):
-    '''
+    """
     Inputs
     input_path: path to single input image
     output_dir: directory where all output images are saved
@@ -68,7 +68,7 @@ def detectHorizon(input_path, output_dir, label=None):
     Outputs
     loss: list of Euclidean Distance per image
     Also saves a copy of the input image with the horizon line in the output directory
-    '''
+    """
     
     img = cv2.imread(input_path)
     img_out = img.copy()

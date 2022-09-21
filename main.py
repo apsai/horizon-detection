@@ -9,14 +9,14 @@ import metrics
 
 
 # ASSUMPTION: run via shell script, paths will be consistent
-input_dir = '/app/input'
-output_dir = '/app/output'
+input_dir = "/app/input"
+output_dir = "/app/output"
 
 
 def main(input_dir, output_dir):
     start_time = time.time()
     
-    # Create output dir if it doesn't exist
+    # Create output dir if it doesn"t exist
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -24,7 +24,7 @@ def main(input_dir, output_dir):
     try:
         assert os.path.exists(input_dir)
     except AssertionError:
-        print(f'ERROR: failed to volume mount input directory')
+        print(f"ERROR: failed to volume mount input directory")
         return
 
     # Check if groundtruth file exists
@@ -32,11 +32,13 @@ def main(input_dir, output_dir):
     try:
         with open(label_json_path, "r") as f:
             label = json.load(f)
+        print("Found ground truth file")
     except Exception as e:
         label = None
         print("Evaluation metrics cannot be calculated.")
 
     # Detect horizon line and write image to output folder
+    print("Begin processing")
     img_paths = glob.glob(input_dir + "/*.jpg")
     loss = []
     for input_path in img_paths:
@@ -47,8 +49,8 @@ def main(input_dir, output_dir):
             print("Printing evaluation metrics...")
             metrics.printEvaluationMetrics(loss)
     time_taken = time.time() - start_time
-    print(f'Time Taken to process {len(img_paths)} images is {time_taken} seconds')
+    print(f"Time Taken to process {len(img_paths)} images is {round(time_taken, 2)} seconds")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main(input_dir, output_dir)

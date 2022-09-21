@@ -46,6 +46,7 @@ def calcEuclidianDistance(true_coords,pred_coords):
 
 # Print evaluation metrics to console
 def printEvaluationMetrics(loss_list):
-    print("Max Euclidean Distance: ", np.max(loss_list))
-    print("Mean Euclidean Distance: ", np.mean(loss_list))
+    print("Min Euclidean Distance: ", round(np.min(loss_list), 2))
+    print("Max Euclidean Distance: ", round(np.max(loss_list), 2))
+    print("Mean Euclidean Distance: ", round(np.mean(loss_list), 2))
 

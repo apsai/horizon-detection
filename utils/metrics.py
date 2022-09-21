@@ -8,7 +8,7 @@ def houghScoring(ground_image,line, alpha = 1.0):
         ground_image = (ground_image - 1)
     
     # Calculate x,y coordinates of Hough Lines
-    coordinates = calcLineParams(line)
+    coordinates = calcLineParams(line, ground_image.shape)
     hough_image = np.zeros_like(ground_image)
     pts = np.array([[0,0],[ground_image.shape[1],0],(coordinates[2],coordinates[3]),(coordinates[0],coordinates[1])])
     _=cv2.drawContours(hough_image, np.int32([pts]),0, 1, -1)
@@ -21,16 +21,16 @@ def houghScoring(ground_image,line, alpha = 1.0):
     return coordinates, cost
 
 # Calculate x,y coordinates from polar coordinates of Hough Transform. Source: https://docs.opencv.org/3.4/d9/db0/tutorial_hough_lines.html
-def calcLineParams(line):
+def calcLineParams(line, image_shape):
     rho,theta = line[0]
     a = np.cos(theta)
     b = np.sin(theta)
     x0 = a*rho
     y0 = b*rho
     x1 = 0
-    y1 = int(y0 + 1080*(a))
-    x2 = 1920
-    y2 = int(y0 - 1080*(a))
+    y1 = int(y0 + image_shape[0]*(a))
+    x2 = image_shape[1]
+    y2 = int(y0 - image_shape[0]*(a))
     return [x1, y1, x2, y2]
 
 # Source: McGee et al 2005: Obstacle Detection for Small Autonomous Aircraft using Sky Segmentation

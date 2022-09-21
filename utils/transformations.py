@@ -11,7 +11,7 @@ import metrics
 def getContourLine(img):
     # Apply blurring, thresholding and morphological transformations to identify land
     # Gaussian blur to smooth image. 
-    img_gauss = cv2.GaussianBlur(img, (15,15),9)
+    img_gauss = cv2.GaussianBlur(img, (15,15), 9)  # HARDCODED
     
     # Otsu threshold to binarize image. We are using blue channel only
     thr, img_otsu = cv2.threshold(img_gauss[:,:,0], thresh=0, maxval=1,
@@ -19,12 +19,12 @@ def getContourLine(img):
     land_mask = img_otsu-1
     
     # Morphological functions to reduce noise
-    opening = cv2.morphologyEx(land_mask, cv2.MORPH_OPEN, (21,21))
-    closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, (21,21))
+    opening = cv2.morphologyEx(land_mask, cv2.MORPH_OPEN, (21,21)) # HARDCODED
+    closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, (21,21)) # HARDCODED
     
     # Use land mask to detect horizon contour
     # Canny edge detection
-    image_canny_closing = cv2.Canny(image=land_mask, threshold1=100, threshold2=200)
+    image_canny_closing = cv2.Canny(image=land_mask, threshold1=100, threshold2=200) # HARDCODED
     
     # Identify longest contour (land contour)
     contours, hierarchy = cv2.findContours(image_canny_closing, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
@@ -42,7 +42,7 @@ def getContourLine(img):
 # Apply Hough Transform, score hough lines, and return best fitting horizon line
 def getHorizonLineCoords(img_contours, land_mask):
     # Draw hough lines on smoothened horizon contour. Source: https://docs.opencv.org/3.4/d9/db0/tutorial_hough_lines.html
-    lines = cv2.HoughLines(img_contours,75,np.pi/180,3)
+    lines = cv2.HoughLines(img_contours,75,np.pi/180,3) # HARDCODED
     all_coordinates = []
     all_cost = []
     

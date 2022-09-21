@@ -17,11 +17,13 @@ To actually run the container, call:
 ./run.sh
 ```
 
-NOTE: be sure it has the correct permissions! You may need to run:
+NOTE: be sure it has the correct permissions! You may first need to run:
 
 ```bash
 chmod 755 run.sh
 ```
+
+If you intend to run the script again, be sure to clear out the contents of the `input` and `output` directories!
 
 ### Evaluation metrics
 
@@ -110,6 +112,7 @@ Note: Ground truth in green and Prediction in blue
 - We need to study distribution of the blue channel across a larger dataset to determine if this solution will remain robust. Alternatively, use more bands.
 - Masking out the sun and clouds might help with detecting the water edges better.
 - Improving the ground truth will help towards building supervised algorithms.
+- Runtime will likely improve by provisioning more resources to Docker, multiprocessing, or not using an Apple silicon-based Mac
 
 ## Sources
 

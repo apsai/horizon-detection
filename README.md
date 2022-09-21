@@ -48,13 +48,7 @@ Time Taken to process 150 images is 8.16 seconds
 ### Assumptions
 
 - Test image folder has the same directory and naming structure as provided input images. Images are all `.jpg` and if metrics are desired, there'll be a `ground_truth.json` file provided.
-- All images are 3 channels, from the same sensor, orientation, and are in the RGB colorspace.
-- This approach has not been tested against any other image angles and might not be altitude invariant.
-- Images are all taken during the day.
-- Images are all similar resolution. 
-- While there is a Gaussian filter in use, this algorithm may not be resilient to excessive noise.
-- The horizon is never entirely water.
-- The horizon is always a horizontal line and all test images shall be oriented as such.
+- All images are 3 channels, from the same sensor, and are in the RGB colorspace.
 
 ### Algorithm
 
@@ -110,6 +104,10 @@ Note: Ground truth in green and Prediction in blue
 - Using just the blue band of input images gives better performance metrics than K-means clustering. The latter is also significantly more resource intensive.
 - False positives and false negatives are both penalized equally right now. Studying how the horizon line tends to be skewed could help with a weighted penalty solution.
 - We need to study distribution of the blue channel across a larger dataset to determine if this solution will remain robust. Alternatively, use more bands.
+- This approach has not been tested against any other image angles and might not be altitude invariant.
+- Check for resolution, sensor type and orientatin resilience.
+- While there is a Gaussian filter in use, this algorithm may not be resilient to excessive noise.
+- Test performance on a water horizon.
 - Masking out the sun and clouds might help with detecting the water edges better.
 - Improving the ground truth will help towards building supervised algorithms.
 - Runtime will likely improve by provisioning more resources to Docker, multiprocessing, or not using an Apple silicon-based Mac

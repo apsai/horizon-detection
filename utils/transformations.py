@@ -7,40 +7,36 @@ import sys
 import time
 import metrics
     
-
-# Apply blurring, thresholding and morphological transformations to identify land
-def applySpatialFilters(img):
-    # Gaussian blur to smooth image. NOTE: we are using blue channel only
-    img_gauss = cv2.GaussianBlur(img[:,:,0], (15,15),9)
+# Return horizon contour line for input image
+def getContourLine(img):
+    # Apply blurring, thresholding and morphological transformations to identify land
+    # Gaussian blur to smooth image. 
+    img_gauss = cv2.GaussianBlur(img, (15,15),9)
     
-    # Otsu threshold to binarize image
-    thr, img_otsu = cv2.threshold(img_gauss, thresh=0, maxval=1,
+    # Otsu threshold to binarize image. We are using blue channel only
+    thr, img_otsu = cv2.threshold(img_gauss[:,:,0], thresh=0, maxval=1,
         type=cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     land_mask = img_otsu-1
     
     # Morphological functions to reduce noise
     opening = cv2.morphologyEx(land_mask, cv2.MORPH_OPEN, (21,21))
     closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, (21,21))
-    return closing
     
-    
-# Use land mask to detect horizon contour
-def getContourLine(land_mask):
+    # Use land mask to detect horizon contour
     # Canny edge detection
     image_canny_closing = cv2.Canny(image=land_mask, threshold1=100, threshold2=200)
-    contours, hierarchy = cv2.findContours(image_canny_closing, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     
     # Identify longest contour (land contour)
+    contours, hierarchy = cv2.findContours(image_canny_closing, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     contour = max(contours, key = len)
     #Source: https://docs.opencv.org/4.x/dd/d49/tutorial_py_contour_features.html
     arclen = cv2.arcLength(contour, True)
     # Smooth contour line
     cnt = cv2.approxPolyDP(contour, 0.002*arclen, False)
-    
     # Create binary image with just contour line
     img_cont = np.zeros_like(image_canny_closing)
     img_cont = cv2.drawContours(img_cont,[cnt],0,255,2)
-    return img_cont
+    return img_cont, land_mask
 
 
 # Apply Hough Transform, score hough lines, and return best fitting horizon line
@@ -79,9 +75,9 @@ def detectHorizon(input_path, output_dir, label=None):
     output_path = os.path.join(output_dir, img_name)
     
     # Apply spatial filters to make edge detection better
-    land_mask = applySpatialFilters(img)
+    # land_mask = applySpatialFilters(img)
     # Edge detection plus simplified land mask detection
-    img_contours = getContourLine(land_mask)
+    img_contours, land_mask = getContourLine(img)
     # Score and draw best fitting Hough line
     horizon_line_xy = getHorizonLineCoords(img_contours, land_mask)        
     

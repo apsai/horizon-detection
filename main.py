@@ -2,12 +2,14 @@ import os
 import time
 import glob
 import json
-from utils import transformations
-from utils import metrics
+import sys
+sys.path.append("utils")
+import transformations
+import metrics
 
 # ASSUMPTION: run via shell script, paths will be consistent
-input_dir = '/app/input'
-output_dir = '/app/output'
+input_dir = 'data/input_1/'
+output_dir = 'data/output_1/'
 
 
 def main(input_dir, output_dir):
@@ -47,4 +49,4 @@ def main(input_dir, output_dir):
 
 
 if __name__ == '__main__':
-    main()
+    main(input_dir, output_dir)

@@ -50,7 +50,8 @@ Mean Euclidean Distance:  55.53
 
 The input data set is limited in number and has low variance. Due to the size of the dataset there is a risk of overfitting. 
 
-At first glance, this looked like an edge detection problem. We are trying to isolate a line that divides the image into "sky" and "land". 
+At first glance, this looked like an edge detection problem. We are trying to isolate a line that divides the image into "sky" and "land".
+
 
 The sequence of steps followed in this algorithm are:
 1. *Spatial filters for denoising* - 
@@ -70,6 +71,26 @@ With the use of a scoring function (adapted from McGee 2005) a cost for each sho
 
 Some parameters were finetuned to minimize the cost function of the hough lines. These parameters have been hard coded in this repository and have been labeled as such.
 
+### Visualizing the algorithm
+
+#### Input RGB image
+![Alt text](src/input_image.png "input image")
+
+#### Thresholded and processed image, AKA Land mask
+![Alt text](src/land_mask.png "land mask image")
+
+#### Edge detection output
+![Alt text](src/edge_det.png "edge image")
+
+#### Simplified contour image
+![Alt text](src/land_contour.png "simplified contour image")
+
+#### Top 3 best Hough lines
+![Alt text](src/all_h_lines.png "top 3 h lines")
+
+#### Selected Hough line, AKA Horizon line
+![Alt text](src/final_output.png "selected h lines")
+Note: Ground truth in green and Prediction in blue
 
 ### Observations and TODOs
 
@@ -85,6 +106,7 @@ Some parameters were finetuned to minimize the cost function of the hough lines.
 ## Sources
 
 https://www.cse.unr.edu/~bebis/CVIU2019.pdf - describes multiple classical techniques and compares them against each other.
+Obstacle Detection for Small Autonomous Aircraft using sky segmentation - McGee et all - great paper! This is where I borrowed the cost function for the hough lines.
 https://ieeexplore.ieee.org/document/5254345 - Otsu Method and K-Means
 https://ieeexplore.ieee.org/abstract/document/4041464 - Early approach
 https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html
